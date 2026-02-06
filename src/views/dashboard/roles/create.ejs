@@ -1,0 +1,102 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Create New Role</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/dashboard/roles/create">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Role Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Permissions</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Post Permissions</h6>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATEPOST" name="permissions" value="CREATEPOST">
+                                    <label class="form-check-label" for="CREATEPOST">Create Posts</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="UPDATEPOST" name="permissions" value="UPDATEPOST">
+                                    <label class="form-check-label" for="UPDATEPOST">Update Posts</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="DELETEPOST" name="permissions" value="DELETEPOST">
+                                    <label class="form-check-label" for="DELETEPOST">Delete Posts</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="READPOST" name="permissions" value="READPOST">
+                                    <label class="form-check-label" for="READPOST">Read Posts</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="PUBLISHPOST" name="permissions" value="PUBLISHPOST">
+                                    <label class="form-check-label" for="PUBLISHPOST">Publish Posts</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <h6>User Permissions</h6>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATEUSER" name="permissions" value="CREATEUSER">
+                                    <label class="form-check-label" for="CREATEUSER">Create Users</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="UPDATEUSER" name="permissions" value="UPDATEUSER">
+                                    <label class="form-check-label" for="UPDATEUSER">Update Users</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="DELETEUSER" name="permissions" value="DELETEUSER">
+                                    <label class="form-check-label" for="DELETEUSER">Delete Users</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="READUSER" name="permissions" value="READUSER">
+                                    <label class="form-check-label" for="READUSER">Read Users</label>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <h6>Other Permissions</h6>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATECATEGORY" name="permissions" value="CREATECATEGORY">
+                                    <label class="form-check-label" for="CREATECATEGORY">Create Categories</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATENAVBAR" name="permissions" value="CREATENAVBAR">
+                                    <label class="form-check-label" for="CREATENAVBAR">Create Navbar Items</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATEFOOTER" name="permissions" value="CREATEFOOTER">
+                                    <label class="form-check-label" for="CREATEFOOTER">Create Footer Items</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="CREATEROLE" name="permissions" value="CREATEROLE">
+                                    <label class="form-check-label" for="CREATEROLE">Create Roles</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Create Role
+                        </button>
+                        <a href="/dashboard/roles" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

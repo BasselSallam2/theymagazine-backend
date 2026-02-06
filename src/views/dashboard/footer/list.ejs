@@ -1,0 +1,67 @@
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Footer Management</h3>
+            <a href="/dashboard/footer/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Footer Item
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Content</th>
+                                <th>Order</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (footerItems && footerItems.length > 0) { %>
+                                <% footerItems.forEach((item, index) => { %>
+                                    <tr>
+                                        <td><%= index + 1 %></td>
+                                        <td><%= item.title %></td>
+                                        <td><%= item.type %></td>
+                                        <td>
+                                            <% if (item.type === 'link') { %>
+                                                <a href="<%= item.url %>" target="_blank"><%= item.url %></a>
+                                            <% } else { %>
+                                                <%= item.content ? item.content.substring(0, 50) + '...' : 'No content' %>
+                                            <% } %>
+                                        </td>
+                                        <td><%= item.order %></td>
+                                        <td>
+                                            <a href="/dashboard/footer/edit/<%= item._id %>" class="btn btn-sm btn-warning me-1">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <form method="POST" action="/dashboard/footer/delete/<%= item._id %>" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this footer item?')">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <p class="mb-0">No footer items found.</p>
+                                        <a href="/dashboard/footer/create" class="btn btn-primary btn-sm mt-2">
+                                            <i class="fas fa-plus me-1"></i>Create First Item
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

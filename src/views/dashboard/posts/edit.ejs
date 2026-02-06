@@ -1,0 +1,396 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Edit Post</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/dashboard/posts/edit/<%= post._id %>">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label for="title" class="form-label">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" value="<%= post.title %>" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+                                <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category *</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                <% if (categories && categories.length > 0) { %>
+                                    <% categories.forEach(category => { %>
+                                        <option value="<%= category._id %>" <%= (category._id.toString() === (post.category ? post.category._id.toString() : '')) ? 'selected' : '' %>>
+                                            <%= category.name %>
+                                        </option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="author" class="form-label">Author</label>
+                            <select class="form-select" id="author" name="author">
+                                <% if (users && users.length > 0) { %>
+                                    <% users.forEach(user => { %>
+                                        <option value="<%= user._id %>" <%= (user._id.toString() === (post.author ? post.author._id.toString() : '')) ? 'selected' : '' %>>
+                                            <%= user.name %>
+                                        </option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="excerpt" class="form-label">Excerpt</label>
+                        <textarea class="form-control" id="excerpt" name="excerpt" rows="3"><%= post.description || '' %></textarea>
+                    </div>
+
+                    <!-- Current Image Display -->
+                    <% if (post.image && post.image.length > 0) { %>
+                        <div class="mb-3" id="currentImageSection">
+                            <label class="form-label">Current Featured Image</label>
+                            <div class="border rounded p-3">
+                                <img src="<%= post.image[0] %>" alt="Current image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                <div class="mt-2 d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeCurrentImage()">
+                                        <i class="fas fa-trash me-1"></i>Remove Current Image
+                                    </button>
+                                    <small class="text-muted">Upload new image below to replace current one</small>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Image Upload Section -->
+                    <div class="mb-3">
+                        <label class="form-label"><%= post.image && post.image.length > 0 ? 'Replace' : 'Add' %> Featured Image</label>
+                        <div class="border rounded p-3">
+                            <div class="mb-3">
+                                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                            </div>
+                            <div id="imagePreview" class="d-none">
+                                <img id="previewImg" src="" alt="Preview" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeImage()">Remove Image</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HTML Editor -->
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content *</label>
+                        <div class="editor-toolbar mb-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('bold')" title="Bold">
+                                <i class="fas fa-bold"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('italic')" title="Italic">
+                                <i class="fas fa-italic"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('underline')" title="Underline">
+                                <i class="fas fa-underline"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('insertUnorderedList')" title="Bullet List">
+                                <i class="fas fa-list-ul"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatText('insertOrderedList')" title="Numbered List">
+                                <i class="fas fa-list-ol"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertLink()" title="Insert Link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImage()" title="Insert Image">
+                                <i class="fas fa-image"></i>
+                            </button>
+                        </div>
+                        <div id="editor" contenteditable="true" class="form-control" style="min-height: 300px; border: 1px solid #ced4da; border-radius: 0.375rem; padding: 0.375rem 0.75rem;">
+                            <%- post.content || '<p>Start writing your post content here...</p>' %>
+                        </div>
+                        <input type="hidden" name="imageUrl" id="image" value="<%= post.image && post.image.length > 0 ? post.image[0] : '' %>">
+                        <textarea name="content" id="content" class="d-none"><%= post.content || '' %></textarea>
+                    </div>
+
+                    <!-- SEO Fields -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="metaTitle" class="form-label">Meta Title</label>
+                            <input type="text" class="form-control" id="metaTitle" name="metaTitle" value="<%= post.seo && post.seo.title || '' %>">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="metaDescription" class="form-label">Meta Description</label>
+                            <input type="text" class="form-control" id="metaDescription" name="metaDescription" value="<%= post.seo && post.seo.description || '' %>">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input type="text" class="form-control" id="tags" name="tags" value="<%= post.tags ? post.tags.join(', ') : '' %>">
+                        <div class="form-text">Separate tags with commas</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="isFeatured" name="isFeatured" value="true" <%= post.isFeatured ? 'checked' : '' %>>
+                            <label class="form-check-label" for="isFeatured">
+                                Featured Post
+                            </label>
+                            <div class="form-text">Mark this post as featured to highlight it on the homepage</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Update Post
+                        </button>
+                        <a href="/dashboard/posts" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Image preview functionality
+// Preview functionality for new uploads
+function showImagePreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('previewImg').src = e.target.result;
+        document.getElementById('imagePreview').classList.remove('d-none');
+    };
+    reader.readAsDataURL(file);
+}
+
+let isUploading = false;
+
+async function uploadImage(file) {
+    console.log('=== UPLOAD FUNCTION STARTED - THIS SHOULD APPEAR ===');
+    console.log('File to upload:', file.name, 'Size:', file.size, 'Type:', file.type);
+    isUploading = true;
+
+    // Check if user has auth token
+    const cookies = document.cookie;
+    console.log('Current cookies:', cookies);
+    const hasToken = cookies.includes('token=');
+    console.log('Has token cookie:', hasToken);
+
+    const formData = new FormData();
+    formData.append('image', file);
+    console.log('FormData created with file');
+
+    try {
+        console.log('Making fetch request to /api/upload...');
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        });
+
+        console.log('=== UPLOAD RESPONSE RECEIVED ===');
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Upload response body:', result);
+            console.log('Extracted URL:', result.result?.secure_url);
+
+            if (result.result && result.result.secure_url) {
+                document.getElementById('image').value = result.result.secure_url;
+                console.log('=== UPLOAD SUCCESSFUL ===');
+                console.log('Hidden field set to:', result.result.secure_url);
+                alert('Image uploaded successfully!');
+            } else {
+                console.error('Invalid response format - no URL in result');
+                alert('Upload response invalid. Please try again.');
+            }
+        } else {
+            const errorText = await response.text();
+            console.error('=== UPLOAD FAILED ===');
+            console.error('Status:', response.status);
+            console.error('Error response:', errorText);
+
+            if (response.status === 401) {
+                alert('Authentication failed. Please log in again.');
+            } else {
+                alert('Image upload failed. Please try again.');
+            }
+        }
+    } catch (error) {
+        console.error('=== UPLOAD ERROR ===');
+        console.error('Network/fetch error:', error);
+        alert('Network error during upload. Please try again.');
+    } finally {
+        isUploading = false;
+        console.log('Upload function completed, isUploading set to false');
+    }
+}
+
+function removeCurrentImage() {
+    if (confirm('Are you sure you want to remove the current image?')) {
+        document.getElementById('image').value = 'REMOVE_IMAGE';
+        // Hide the current image display section
+        const currentImageSection = document.getElementById('currentImageSection');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'none';
+        }
+        alert('Current image will be removed when you save the post.');
+    }
+}
+
+function removeImage() {
+    document.getElementById('imageFile').value = '';
+    document.getElementById('image').value = 'REMOVE_IMAGE';
+    document.getElementById('imagePreview').classList.add('d-none');
+}
+
+// HTML Editor functionality
+function formatText(command) {
+    const editor = document.getElementById('editor');
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+
+    if (!range) return;
+
+    switch(command) {
+        case 'bold':
+            wrapSelection('<strong>', '</strong>');
+            break;
+        case 'italic':
+            wrapSelection('<em>', '</em>');
+            break;
+        case 'underline':
+            wrapSelection('<u>', '</u>');
+            break;
+        case 'insertUnorderedList':
+            insertList('ul');
+            break;
+        case 'insertOrderedList':
+            insertList('ol');
+            break;
+    }
+
+    updateHiddenTextarea();
+    editor.focus();
+}
+
+function wrapSelection(openTag, closeTag) {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+
+    if (selectedText) {
+        const newNode = document.createElement('div');
+        newNode.innerHTML = openTag + selectedText + closeTag;
+        range.deleteContents();
+        range.insertNode(newNode.firstChild);
+    }
+}
+
+function insertList(type) {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    const list = document.createElement(type);
+    const listItem = document.createElement('li');
+    listItem.textContent = 'List item';
+    list.appendChild(listItem);
+
+    range.deleteContents();
+    range.insertNode(list);
+}
+
+function insertLink() {
+    const url = prompt('Enter URL:');
+    if (url) {
+        wrapSelection('<a href="' + url + '">', '</a>');
+    }
+    document.getElementById('editor').focus();
+}
+
+function insertImage() {
+    const url = prompt('Enter image URL:');
+    if (url) {
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(img);
+        }
+    }
+    document.getElementById('editor').focus();
+}
+
+function updateHiddenTextarea() {
+    document.getElementById('content').value = document.getElementById('editor').innerHTML;
+}
+
+// Content editor with synchronization
+document.addEventListener('DOMContentLoaded', function() {
+    // Image upload event listener
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            showImagePreview(file);
+            uploadImage(file);
+        }
+    });
+
+    const editor = document.getElementById('editor');
+    const hiddenTextarea = document.getElementById('content');
+    const form = document.querySelector('form');
+
+    // Function to sync content
+    function syncContent() {
+        const html = editor.innerHTML;
+        hiddenTextarea.value = html;
+        console.log('Content synced:', html);
+    }
+
+    // Sync on input events
+    editor.addEventListener('input', syncContent);
+    editor.addEventListener('blur', syncContent);
+    editor.addEventListener('keyup', syncContent);
+    editor.addEventListener('keydown', syncContent);
+    editor.addEventListener('paste', function() { setTimeout(syncContent, 100); });
+    editor.addEventListener('cut', function() { setTimeout(syncContent, 100); });
+
+    // Clear placeholder on focus
+    editor.addEventListener('focus', function() {
+        if (editor.innerHTML.trim() === '<p>Start writing your post content here...</p>') {
+            editor.innerHTML = '<p></p>';
+            syncContent();
+        }
+    });
+
+    // Force sync before form submission
+    form.addEventListener('submit', function(e) {
+        syncContent();
+        console.log('Form submit - Content:', hiddenTextarea.value);
+        console.log('Form submit - All form data:', new FormData(form));
+    });
+
+    // Initial sync
+    syncContent();
+});
+</script>

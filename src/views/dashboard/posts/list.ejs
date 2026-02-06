@@ -1,0 +1,133 @@
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3>Posts Management</h3>
+            <a href="/dashboard/posts/create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Create New Post
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Featured</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (posts && posts.length > 0) { %>
+                                <% posts.forEach((post, index) => { %>
+                                    <tr>
+                                        <td><%= (pagination ? (pagination.page - 1) * pagination.limit : 0) + index + 1 %></td>
+                                        <td>
+                                            <strong><%= post.title %></strong>
+                                            <% if (post.excerpt) { %>
+                                                <br><small class="text-muted"><%= post.excerpt.substring(0, 50) %>...</small>
+                                            <% } %>
+                                        </td>
+                                        <td><%= post.author ? post.author.name : 'Unknown' %></td>
+                                        <td><%= post.category ? post.category.name : 'Uncategorized' %></td>
+                                        <td>
+                                            <% if (post.status === 'published') { %>
+                                                <span class="badge bg-success">Published</span>
+                                            <% } else if (post.status === 'draft') { %>
+                                                <span class="badge bg-warning">Draft</span>
+                                            <% } else { %>
+                                                <span class="badge bg-secondary"><%= post.status %></span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <% if (post.isFeatured) { %>
+                                                <span class="badge bg-info">Featured</span>
+                                            <% } else { %>
+                                                <span class="text-muted">-</span>
+                                            <% } %>
+                                        </td>
+                                        <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+                                        <td>
+                                            <a href="/dashboard/posts/edit/<%= post._id %>" class="btn btn-sm btn-warning me-1">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <form method="POST" action="/dashboard/posts/delete/<%= post._id %>" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post?')">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="8" class="text-center py-4">
+                                        <p class="mb-0">No posts found.</p>
+                                        <a href="/dashboard/posts/create" class="btn btn-primary btn-sm mt-2">
+                                            <i class="fas fa-plus me-1"></i>Create First Post
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (pagination && pagination.pages > 1) { %>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Showing <%= (pagination.page - 1) * pagination.limit + 1 %> to <%= Math.min(pagination.page * pagination.limit, pagination.count) %> of <%= pagination.count %> posts
+                    </div>
+                    <nav aria-label="Posts pagination">
+                        <ul class="pagination pagination-sm mb-0">
+                            <!-- Previous Button -->
+                            <% if (pagination.hasPrevPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= pagination.prevPage %>">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                            <% } else { %>
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </span>
+                            </li>
+                            <% } %>
+
+                            <!-- Page Numbers -->
+                            <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                            <li class="page-item <%= i === pagination.page ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                            <% } %>
+
+                            <!-- Next Button -->
+                            <% if (pagination.hasNextPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= pagination.nextPage %>">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                            <% } else { %>
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </span>
+                            </li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

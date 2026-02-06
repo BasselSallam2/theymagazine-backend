@@ -1,0 +1,72 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Edit Footer</h5>
+            </div>
+            <div class="card-body">
+                <% if (typeof success !== 'undefined' && success === '1') { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>Footer updated successfully!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% } %>
+
+                <form method="POST" action="/dashboard/footer">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="subtitle1" class="form-label">Quote/Subtitle 1</label>
+                            <textarea class="form-control" id="subtitle1" name="subtitle1" rows="3" placeholder="Enter inspirational quote or subtitle"><%= footer.subtitle1 || '' %></textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="title2" class="form-label">Section 2 Title</label>
+                            <input type="text" class="form-control" id="title2" name="title2" value="<%= footer.title2 || '' %>" placeholder="e.g., Address">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="subtitle2" class="form-label">Section 2 Content</label>
+                            <textarea class="form-control" id="subtitle2" name="subtitle2" rows="3" placeholder="Enter address or contact info"><%= footer.subtitle2 || '' %></textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="title3" class="form-label">Section 3 Title</label>
+                            <input type="text" class="form-control" id="title3" name="title3" value="<%= footer.title3 || '' %>" placeholder="e.g., Business Hours">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="subtitle3" class="form-label">Section 3 Content</label>
+                        <textarea class="form-control" id="subtitle3" name="subtitle3" rows="3" placeholder="Enter business hours or additional info"><%= footer.subtitle3 || '' %></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="facebook" class="form-label">Facebook URL</label>
+                            <input type="url" class="form-control" id="facebook" name="facebook" value="<%= footer.facebook || '' %>" placeholder="https://www.facebook.com/...">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram" class="form-label">Instagram URL</label>
+                            <input type="url" class="form-control" id="instagram" name="instagram" value="<%= footer.instagram || '' %>" placeholder="https://www.instagram.com/...">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="twitter" class="form-label">Twitter URL</label>
+                        <input type="url" class="form-control" id="twitter" name="twitter" value="<%= footer.twitter || '' %>" placeholder="https://www.twitter.com/...">
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-lg" onclick="return confirm('Are you sure you want to update the footer?')">
+                            <i class="fas fa-save me-2"></i>Update Footer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
