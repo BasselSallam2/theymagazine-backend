@@ -6,7 +6,7 @@ export function createSlug(schema: Schema, target: string) {
 	schema.pre("save", async function (this: HydratedDocument<any>, next: NextFunction) {
 		try {
 			if (this.isNew || this.isModified(target)) {
-				this.slug = slugify(this[target]);
+				this.slug = (slugify(this[target])).toLowerCase();
 			}
 
 			next();

@@ -6,7 +6,7 @@ import { protect } from "@middleware/auth.middleware";
 const router = Router();
 
 router.route("/")
-.post(protect , upload.single("image"), uploadController.upload);
+.post( upload.single("image"), uploadController.upload);
 
 
 

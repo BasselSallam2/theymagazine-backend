@@ -1,32 +1,30 @@
-import streamifier from "streamifier";
 import { cloudinary } from "@config/cloudinary.config";
 import { ApiError } from "@utils/errorsHandlers/ApiError.handler";
-
 import type { UploadApiResponse } from "cloudinary";
 
 export class UploadService {
-	constructor() {}
+    async uploadToCloudnairy(file: any): Promise<UploadApiResponse> {
+        if (!file || !file.buffer) {
+            throw new ApiError("No file provided", 400);
+        }
 
-	async uploadToCloudnairy(file: any): Promise<UploadApiResponse> {
-		return new Promise((resolve, reject) => {
-			const uploadStream = cloudinary.uploader.upload_stream(
-				{ folder: "app_uploads" },
-				(error, result) => {
-					if (error) {
-						console.error("Cloudinary upload error:", error);
+        try {
 
-						reject(new ApiError("Cloudinary upload error", 500));
-					} else if (result) {
-						resolve(result);
-					} else {
-						reject(new ApiError("Cloudinary upload failed", 500));
-					}
-				}
-			);
+            const b64 = Buffer.from(file.buffer).toString("base64");
+            const dataURI = `data:${file.mimetype};base64,${b64}`;
 
-			streamifier.createReadStream(file.buffer).pipe(uploadStream);
-		});
-	}
+            const result = await cloudinary.uploader.upload(dataURI, {
+                folder: "app_uploads",
+                resource_type: "auto",
+            });
+
+            return result;
+        } catch (error: any) {
+            console.error("Cloudinary Direct Upload Error:", error);
+
+            throw new ApiError(`Cloudinary: ${error.message}`, 500);
+        }
+    }
 }
 
 export default new UploadService();
