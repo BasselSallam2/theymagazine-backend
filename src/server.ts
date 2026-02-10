@@ -11,7 +11,7 @@ import { seeder } from "seeders/seeder";
 const startServer = async () => {
 	await connectDB();
 	devLogger("Server Connected With DB Successfully");
-	await seeder(); 
+	await seeder();
 	app.listen(getEnv("PORT"), () => {
 		devLogger(`Server started at port ${getEnv("PORT")}`);
 	});

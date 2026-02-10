@@ -28,8 +28,9 @@ import { ErrorRes } from "@shared/responces/errors.responces";
 // });
 
 export const appUse = (app: Express): void => {
-	app.use(express.json({ limit: "10Kb" }));
-	app.use(express.urlencoded({ extended: true, limit: "10Kb" }));
+	// Allow richer post HTML payloads (with embedded media tags) from dashboard/API forms.
+	app.use(express.json({ limit: "2mb" }));
+	app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 	app.use(cookieParser());
 	app.use(compression());
 	app.use(helmet({

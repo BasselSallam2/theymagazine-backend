@@ -39,6 +39,16 @@ export const globalErrorHandler = (err:any , req:Request , res:Response , _next:
         return res.status(400).json(errorObject);
     }
 
+    if(err.type === "entity.too.large"){
+        const errorObject = {
+            success: false,
+            status: "fail",
+            message: "Request payload is too large",
+            action: "Please reduce content size or upload smaller data"
+        }
+        return res.status(413).json(errorObject);
+    }
+
 
 
 
